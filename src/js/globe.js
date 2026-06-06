@@ -51,7 +51,7 @@ export function initGlobe() {
   const terrainMaterial = new THREE.MeshPhongMaterial({
     map: textureLoader.load(EARTH_TEXTURE),
     bumpMap: textureLoader.load(EARTH_BUMP),
-    bumpScale: 0.03,
+    bumpScale: 0.08,
     specularMap: textureLoader.load(EARTH_SPECULAR),
     specular: new THREE.Color(0x222244),
     shininess: 15,
