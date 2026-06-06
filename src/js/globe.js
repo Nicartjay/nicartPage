@@ -14,10 +14,8 @@ export function initGlobe() {
 
   // --- Scene Setup ---
   const scene = new THREE.Scene();
-  // Use aspect 1 so the sphere renders as a perfect circle
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-  // Position camera to the right so we see the left edge of the globe (showing right half to user)
-  camera.position.set(1.0, 0, 2.2);
+  camera.position.set(0, 0, 2.5);
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -142,7 +140,6 @@ export function initGlobe() {
   // --- Mouse Interaction ---
   let mouseX = 0,
     mouseY = 0;
-  let isDragging = false;
 
   container.addEventListener('mousemove', (e) => {
     const rect = container.getBoundingClientRect();
@@ -150,26 +147,19 @@ export function initGlobe() {
     mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
   });
 
-  container.addEventListener('mousedown', () => {
-    isDragging = true;
-  });
-  container.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
   container.addEventListener('mouseleave', () => {
-    isDragging = false;
     mouseX = 0;
     mouseY = 0;
   });
 
   // --- Resize ---
+  // Render a SQUARE canvas based on container height (taller dimension)
+  // so the globe is always a perfect circle. CSS will handle positioning.
   function resize() {
-    const w = container.clientWidth;
     const h = container.clientHeight;
-    // Use the larger dimension so the globe fills/overflows the container
-    const size = Math.max(w, h);
+    // Use height as the square dimension (globe will be a perfect circle)
+    const size = h;
     renderer.setSize(size, size);
-    // Keep aspect 1:1 so sphere is always a perfect circle
     camera.aspect = 1;
     camera.updateProjectionMatrix();
   }
@@ -187,14 +177,12 @@ export function initGlobe() {
     terrainMesh.rotation.y += TERRAIN_VELOCITY;
     cloudsMesh.rotation.y += CLOUDS_VELOCITY;
 
-    // Subtle mouse influence on camera (keep it mostly showing right half)
-    const targetX = 1.0 + mouseX * 0.15;
-    const targetY = mouseY * 0.2;
+    // Subtle mouse parallax on globe rotation
+    const targetRotX = mouseY * 0.1;
+    const targetRotY = mouseX * 0.1;
+    earthGroup.rotation.x += (targetRotX - earthGroup.rotation.x) * 0.02;
 
-    camera.position.x += (targetX - camera.position.x) * 0.02;
-    camera.position.y += (-targetY - camera.position.y) * 0.02;
     camera.lookAt(scene.position);
-
     renderer.render(scene, camera);
   }
 

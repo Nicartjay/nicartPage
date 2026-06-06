@@ -444,19 +444,24 @@
 /* Photorealistic Earth Globe in Login Visual Panel */
 .login-globe {
   position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%) translateX(45%);
-  width: 140%;
-  height: 140%;
+  top: 0;
+  /* Push the container so the globe center is at the right edge of the panel */
+  /* This way only the left half of the globe (right half to viewer) is visible */
+  right: -50%;
+  width: 100%;
+  height: 100%;
   z-index: 1;
   pointer-events: none;
-  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login-globe canvas {
   display: block;
-  border-radius: 0;
+  /* Canvas is square (set by JS), don't stretch it */
+  width: auto !important;
+  height: 100% !important;
 }
 
 @media (max-width: 860px) {
