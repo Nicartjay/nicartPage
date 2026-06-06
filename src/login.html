@@ -14,6 +14,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <!-- Starfield Background Canvas -->
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <!-- Scroll Stars Parallax Layer -->
+  <div id="scroll-stars" aria-hidden="true"></div>
+
   <div class="login-layout">
     <!-- Left: Animated visual panel -->
     <div class="login-visual">
@@ -27,6 +33,10 @@
         <div class="geo-shape"></div>
         <div class="geo-shape"></div>
       </div>
+
+      <!-- Space Planet in visual panel -->
+      <div id="space-planet" class="login-planet"></div>
+
       <div class="visual-brand">
         <div class="orbit">
           <div class="orbit-dot"></div>
@@ -37,6 +47,9 @@
         <div class="logo-large">nicart<span>.</span>space</div>
         <p class="tagline">Build. Deploy. Create.</p>
       </div>
+
+      <!-- Interactive 3D Globe (small, decorative) -->
+      <div id="globe-container" class="login-globe"></div>
     </div>
 
     <!-- Right: Login form -->

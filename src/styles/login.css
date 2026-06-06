@@ -440,3 +440,42 @@
 }
 
 .field .error-msg.show { display: block; }
+
+/* ============================================
+   Login-specific space effects positioning
+   ============================================ */
+
+/* Planet in visual panel */
+.login-planet {
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  width: 180px;
+  height: 180px;
+  z-index: 1;
+  opacity: 0.7;
+}
+
+/* Globe in visual panel */
+.login-globe {
+  position: absolute;
+  bottom: 8%;
+  left: 5%;
+  width: 160px;
+  height: 160px;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.login-globe canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+}
+
+@media (max-width: 860px) {
+  .login-planet,
+  .login-globe {
+    display: none;
+  }
+}
