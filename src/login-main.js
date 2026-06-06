@@ -25,4 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Cursor light on form side
   initCursorLight();
+
+  // Photorealistic Earth Globe (lazy-loaded for performance)
+  import('./js/globe.js').then(({ initGlobe }) => {
+    initGlobe();
+  });
 });

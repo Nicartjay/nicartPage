@@ -1,7 +1,8 @@
 /**
- * Interactive 3D Globe
- * Inspired by enesser/earth-webgl & Gopi-Chakradhar's WebGL globe
- * Renders a dotted sphere with ripple effect on click
+ * Photorealistic 3D Earth Globe
+ * Inspired by https://codepen.io/enesser/full/pgWjoW (enesser/earth-webgl)
+ * Uses Three.js with sphere geometry + NASA public domain textures
+ * Features: terrain, clouds, atmosphere glow, directional sun, auto-rotation, mouse orbit
  */
 
 import * as THREE from 'three';
@@ -11,122 +12,135 @@ export function initGlobe() {
   const container = document.getElementById('globe-container');
   if (!container) return;
 
-  // Scene setup
+  // --- Scene Setup ---
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-  camera.position.z = 2.8;
+  camera.position.set(0, 0, 2.8);
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
   });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
-  // Globe geometry — dot matrix sphere
-  const globeGroup = new THREE.Group();
-  scene.add(globeGroup);
+  // --- Lighting (emulates the Sun) ---
+  const sunColor = new THREE.Color('#ffeedd');
+  const directionalLight = new THREE.DirectionalLight(sunColor, 3.4);
+  directionalLight.position.set(-5, 3, -10);
+  directionalLight.castShadow = true;
+  scene.add(directionalLight);
 
-  // Create dots on sphere surface
-  const DOT_COUNT = 5000;
-  const GLOBE_RADIUS = 1;
-  const positions = new Float32Array(DOT_COUNT * 3);
-  const sizes = new Float32Array(DOT_COUNT);
-  const alphas = new Float32Array(DOT_COUNT);
+  const ambientLight = new THREE.AmbientLight(new THREE.Color('#333344'), 0.8);
+  scene.add(ambientLight);
 
-  for (let i = 0; i < DOT_COUNT; i++) {
-    // Fibonacci sphere distribution for even spacing
-    const phi = Math.acos(1 - 2 * (i + 0.5) / DOT_COUNT);
-    const theta = Math.PI * (1 + Math.sqrt(5)) * (i + 0.5);
+  // --- Earth Group ---
+  const earthGroup = new THREE.Group();
+  scene.add(earthGroup);
 
-    const x = GLOBE_RADIUS * Math.sin(phi) * Math.cos(theta);
-    const y = GLOBE_RADIUS * Math.sin(phi) * Math.sin(theta);
-    const z = GLOBE_RADIUS * Math.cos(phi);
+  // --- Texture Loader ---
+  const textureLoader = new THREE.TextureLoader();
 
-    positions[i * 3] = x;
-    positions[i * 3 + 1] = y;
-    positions[i * 3 + 2] = z;
-    sizes[i] = 2.0 + Math.random() * 1.5;
-    alphas[i] = 0.4 + Math.random() * 0.6;
-  }
+  // NASA Blue Marble textures (public domain, served from reliable CDN)
+  const EARTH_TEXTURE =
+    'https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble.jpg';
+  const EARTH_BUMP =
+    'https://unpkg.com/three-globe@2.41.12/example/img/earth-topology.png';
+  const EARTH_SPECULAR =
+    'https://unpkg.com/three-globe@2.41.12/example/img/earth-water.png';
+  const CLOUDS_TEXTURE =
+    'https://unpkg.com/three-globe@2.41.12/example/img/earth-clouds.png';
 
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-  geometry.setAttribute('alpha', new THREE.BufferAttribute(alphas, 1));
+  // --- Terrain Sphere ---
+  const terrainGeometry = new THREE.SphereGeometry(1, 64, 64);
+  const terrainMaterial = new THREE.MeshPhongMaterial({
+    map: textureLoader.load(EARTH_TEXTURE),
+    bumpMap: textureLoader.load(EARTH_BUMP),
+    bumpScale: 0.04,
+    specularMap: textureLoader.load(EARTH_SPECULAR),
+    specular: new THREE.Color('#334466'),
+    shininess: 15,
+  });
+  const terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
+  earthGroup.add(terrainMesh);
 
-  // Custom shader for dots with ripple
-  const vertexShader = `
-    attribute float size;
-    attribute float alpha;
-    varying float vAlpha;
-    uniform float uTime;
-    uniform vec3 uRippleOrigin;
-    uniform float uRippleTime;
+  // --- Clouds Sphere ---
+  const cloudsGeometry = new THREE.SphereGeometry(1.01, 64, 64);
+  const cloudsMaterial = new THREE.MeshPhongMaterial({
+    map: textureLoader.load(CLOUDS_TEXTURE),
+    transparent: true,
+    opacity: 0.35,
+    depthWrite: false,
+    blending: THREE.NormalBlending,
+  });
+  const cloudsMesh = new THREE.Mesh(cloudsGeometry, cloudsMaterial);
+  earthGroup.add(cloudsMesh);
 
+  // --- Atmosphere Glow (Fresnel rim shader) ---
+  const atmosphereVertexShader = `
+    varying vec3 vNormal;
+    varying vec3 vPosition;
     void main() {
-      vAlpha = alpha;
-
-      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-
-      // Ripple effect
-      float dist = distance(position, uRippleOrigin);
-      float rippleWave = sin(dist * 10.0 - uRippleTime * 4.0) * 0.5 + 0.5;
-      float rippleStrength = max(0.0, 1.0 - uRippleTime * 0.5) * step(dist, uRippleTime * 2.0);
-
-      float finalSize = size + rippleStrength * rippleWave * 4.0;
-      vAlpha = alpha + rippleStrength * rippleWave * 0.5;
-
-      gl_PointSize = finalSize * (300.0 / -mvPosition.z);
-      gl_Position = projectionMatrix * mvPosition;
+      vNormal = normalize(normalMatrix * normal);
+      vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `;
 
-  const fragmentShader = `
-    varying float vAlpha;
-    uniform vec3 uColor;
+  const atmosphereFragmentShader = `
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    uniform vec3 uAtmosphereColor;
+    uniform float uAtmosphereIntensity;
 
     void main() {
-      float d = length(gl_PointCoord - vec2(0.5));
-      if (d > 0.5) discard;
-      float strength = 1.0 - (d * 2.0);
-      gl_FragColor = vec4(uColor, vAlpha * strength);
+      // Fresnel effect — stronger glow at edges
+      vec3 viewDir = normalize(-vPosition);
+      float fresnel = 1.0 - dot(viewDir, vNormal);
+      fresnel = pow(fresnel, 3.0) * uAtmosphereIntensity;
+
+      gl_FragColor = vec4(uAtmosphereColor, fresnel * 0.8);
     }
   `;
 
-  const uniforms = {
-    uTime: { value: 0 },
-    uColor: { value: new THREE.Color(0x60a5fa) },
-    uRippleOrigin: { value: new THREE.Vector3(0, 0, 1) },
-    uRippleTime: { value: 10 }, // large = no visible ripple initially
-  };
-
-  const material = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    uniforms,
+  const atmosphereGeometry = new THREE.SphereGeometry(1.08, 64, 64);
+  const atmosphereMaterial = new THREE.ShaderMaterial({
+    vertexShader: atmosphereVertexShader,
+    fragmentShader: atmosphereFragmentShader,
+    uniforms: {
+      uAtmosphereColor: { value: new THREE.Color('#4488ff') },
+      uAtmosphereIntensity: { value: 1.5 },
+    },
     transparent: true,
     depthWrite: false,
+    side: THREE.FrontSide,
     blending: THREE.AdditiveBlending,
   });
+  const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+  earthGroup.add(atmosphereMesh);
 
-  const points = new THREE.Points(geometry, material);
-  globeGroup.add(points);
-
-  // Ambient glow ring
-  const ringGeo = new THREE.RingGeometry(1.02, 1.06, 64);
-  const ringMat = new THREE.MeshBasicMaterial({
-    color: 0x60a5fa,
+  // --- Outer glow (larger, subtler) ---
+  const outerGlowGeometry = new THREE.SphereGeometry(1.18, 32, 32);
+  const outerGlowMaterial = new THREE.ShaderMaterial({
+    vertexShader: atmosphereVertexShader,
+    fragmentShader: atmosphereFragmentShader,
+    uniforms: {
+      uAtmosphereColor: { value: new THREE.Color('#1a4488') },
+      uAtmosphereIntensity: { value: 0.8 },
+    },
     transparent: true,
-    opacity: 0.15,
-    side: THREE.DoubleSide,
+    depthWrite: false,
+    side: THREE.BackSide,
+    blending: THREE.AdditiveBlending,
   });
-  const ring = new THREE.Mesh(ringGeo, ringMat);
-  globeGroup.add(ring);
+  const outerGlow = new THREE.Mesh(outerGlowGeometry, outerGlowMaterial);
+  earthGroup.add(outerGlow);
 
-  // Mouse interaction
-  let mouseX = 0, mouseY = 0;
-  let targetRotX = 0, targetRotY = 0;
+  // --- Mouse Interaction ---
+  let mouseX = 0,
+    mouseY = 0;
+  let isDragging = false;
 
   container.addEventListener('mousemove', (e) => {
     const rect = container.getBoundingClientRect();
@@ -134,54 +148,61 @@ export function initGlobe() {
     mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
   });
 
-  // Click ripple
-  container.addEventListener('click', (e) => {
-    const rect = container.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-    const y = -((e.clientY - rect.top) / rect.height - 0.5) * 2;
-
-    // Approximate click to sphere surface
-    uniforms.uRippleOrigin.value.set(x, y, Math.sqrt(Math.max(0, 1 - x * x - y * y)));
-    uniforms.uRippleTime.value = 0;
+  container.addEventListener('mousedown', () => {
+    isDragging = true;
+  });
+  container.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+  container.addEventListener('mouseleave', () => {
+    isDragging = false;
+    mouseX = 0;
+    mouseY = 0;
   });
 
-  // Resize handling
+  // --- Resize ---
   function resize() {
-    const size = Math.min(container.clientWidth, container.clientHeight);
-    renderer.setSize(size, size);
-    camera.aspect = 1;
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    const size = Math.min(w, h);
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
-
   resize();
   window.addEventListener('resize', resize);
 
-  // Animation loop
-  let time = 0;
+  // --- Animation Loop ---
+  const TERRAIN_VELOCITY = 0.001;
+  const CLOUDS_VELOCITY = 0.0015;
+
   function animate() {
     requestAnimationFrame(animate);
-    time += 0.01;
 
-    // Auto rotation + mouse influence
-    targetRotY = time * 0.3 + mouseX * 0.5;
-    targetRotX = mouseY * 0.3;
+    // Auto-rotation
+    terrainMesh.rotation.y += TERRAIN_VELOCITY;
+    cloudsMesh.rotation.y += CLOUDS_VELOCITY;
 
-    globeGroup.rotation.y += (targetRotY - globeGroup.rotation.y) * 0.02;
-    globeGroup.rotation.x += (targetRotX - globeGroup.rotation.x) * 0.02;
+    // Mouse orbit influence on camera
+    const targetX = mouseY * 0.5;
+    const targetY = mouseX * 0.8;
 
-    // Update uniforms
-    uniforms.uTime.value = time;
-    uniforms.uRippleTime.value += 0.016;
+    camera.position.x += (targetY - camera.position.x) * 0.02;
+    camera.position.y += (-targetX - camera.position.y) * 0.02;
+    camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
   }
 
-  // Entry animation
-  gsap.from(globeGroup.scale, {
-    x: 0, y: 0, z: 0,
-    duration: 1.5,
+  // --- Entry Animation ---
+  earthGroup.scale.set(0, 0, 0);
+  gsap.to(earthGroup.scale, {
+    x: 1,
+    y: 1,
+    z: 1,
+    duration: 2,
     ease: 'elastic.out(1, 0.5)',
-    delay: 0.5,
+    delay: 0.3,
   });
 
   animate();

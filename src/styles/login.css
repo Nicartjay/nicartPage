@@ -441,3 +441,23 @@
 
 .field .error-msg.show { display: block; }
 
+/* Photorealistic Earth Globe in Login Visual Panel */
+.login-globe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.login-globe canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+@media (max-width: 860px) {
+  .login-globe { display: none; }
+}
+
