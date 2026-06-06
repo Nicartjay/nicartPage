@@ -14,8 +14,10 @@ export function initGlobe() {
 
   // --- Scene Setup ---
   const scene = new THREE.Scene();
+  // Use aspect 1 so the sphere renders as a perfect circle
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-  camera.position.set(0, 0, 2.8);
+  // Position camera to the right so we see the left edge of the globe (showing right half to user)
+  camera.position.set(1.0, 0, 2.2);
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -164,9 +166,11 @@ export function initGlobe() {
   function resize() {
     const w = container.clientWidth;
     const h = container.clientHeight;
-    const size = Math.min(w, h);
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
+    // Use the larger dimension so the globe fills/overflows the container
+    const size = Math.max(w, h);
+    renderer.setSize(size, size);
+    // Keep aspect 1:1 so sphere is always a perfect circle
+    camera.aspect = 1;
     camera.updateProjectionMatrix();
   }
   resize();
@@ -183,12 +187,12 @@ export function initGlobe() {
     terrainMesh.rotation.y += TERRAIN_VELOCITY;
     cloudsMesh.rotation.y += CLOUDS_VELOCITY;
 
-    // Mouse orbit influence on camera
-    const targetX = mouseY * 0.5;
-    const targetY = mouseX * 0.8;
+    // Subtle mouse influence on camera (keep it mostly showing right half)
+    const targetX = 1.0 + mouseX * 0.15;
+    const targetY = mouseY * 0.2;
 
-    camera.position.x += (targetY - camera.position.x) * 0.02;
-    camera.position.y += (-targetX - camera.position.y) * 0.02;
+    camera.position.x += (targetX - camera.position.x) * 0.02;
+    camera.position.y += (-targetY - camera.position.y) * 0.02;
     camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
