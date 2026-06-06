@@ -59,14 +59,16 @@ export function initGlobe() {
   const terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
   scene.add(terrainMesh);
 
-  // --- Clouds --- (Normal blending, NOT additive — looks natural like the screenshot)
+  // --- Clouds --- (Additive blending: black areas = invisible, white = bright clouds)
+  // Original enesser uses additive blending which makes clouds glow on lit side
+  // and stay invisible on dark side — works properly with a good cloud texture
   const cloudsGeometry = new THREE.SphereGeometry(1.005, 64, 64);
   const cloudsMaterial = new THREE.MeshPhongMaterial({
     map: textureLoader.load(CLOUDS_TEXTURE),
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.8,
     depthWrite: false,
-    blending: THREE.NormalBlending, // Normal blending for realistic white clouds
+    blending: THREE.AdditiveBlending,
     shininess: 0,
   });
   const cloudsMesh = new THREE.Mesh(cloudsGeometry, cloudsMaterial);
