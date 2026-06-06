@@ -22,20 +22,20 @@ export function initGlobe() {
   });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
-  // Gamma correction for realistic lighting
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = 0.8;
   container.appendChild(renderer.domElement);
 
-  // --- Sun (Directional Light) from the RIGHT side ---
-  // In the original screenshot, light comes from front-right/bottom-right
-  const sunLight = new THREE.DirectionalLight(0xffffff, 3.0);
-  sunLight.position.set(5, 2, 3);
+  // --- Sun (Directional Light) ---
+  // Position from upper-right-behind so the terminator (day/night line)
+  // cuts through the visible portion ~50/50
+  const sunLight = new THREE.DirectionalLight(0xffeedd, 2.2);
+  sunLight.position.set(3, 1, -2);
   scene.add(sunLight);
 
-  // Very dim ambient so dark side isn't totally black (faint city glow feel)
-  const ambientLight = new THREE.AmbientLight(0x0a0a1a, 0.3);
+  // Extremely dim ambient — dark side should be nearly black
+  const ambientLight = new THREE.AmbientLight(0x060612, 0.4);
   scene.add(ambientLight);
 
   // --- Texture Loader ---
@@ -51,22 +51,21 @@ export function initGlobe() {
   const terrainMaterial = new THREE.MeshPhongMaterial({
     map: textureLoader.load(EARTH_TEXTURE),
     bumpMap: textureLoader.load(EARTH_BUMP),
-    bumpScale: 0.02,
+    bumpScale: 0.03,
     specularMap: textureLoader.load(EARTH_SPECULAR),
-    specular: new THREE.Color(0x333333),
-    shininess: 25, // Visible ocean specular like in the original
+    specular: new THREE.Color(0x222244),
+    shininess: 15,
   });
   const terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
   scene.add(terrainMesh);
 
-  // --- Clouds --- (Additive blending: black areas = invisible, white = bright clouds)
-  // Original enesser uses additive blending which makes clouds glow on lit side
-  // and stay invisible on dark side — works properly with a good cloud texture
-  const cloudsGeometry = new THREE.SphereGeometry(1.005, 64, 64);
+  // --- Clouds ---
+  // Additive blending: clouds glow on lit side, invisible on dark side
+  const cloudsGeometry = new THREE.SphereGeometry(1.004, 64, 64);
   const cloudsMaterial = new THREE.MeshPhongMaterial({
     map: textureLoader.load(CLOUDS_TEXTURE),
     transparent: true,
-    opacity: 0.8,
+    opacity: 0.45,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
     shininess: 0,
@@ -74,7 +73,7 @@ export function initGlobe() {
   const cloudsMesh = new THREE.Mesh(cloudsGeometry, cloudsMaterial);
   scene.add(cloudsMesh);
 
-  // --- Atmosphere (thin blue rim glow — Fresnel) ---
+  // --- Atmosphere (thin blue rim — like original) ---
   const atmosphereVert = `
     varying vec3 vNormal;
     varying vec3 vPosition;
@@ -90,15 +89,15 @@ export function initGlobe() {
     void main() {
       vec3 viewDir = normalize(-vPosition);
       float fresnel = 1.0 - dot(viewDir, vNormal);
-      // Tight rim: pow 4 makes it thin, matching the screenshot edge glow
-      float rim = pow(fresnel, 4.0) * 1.4;
-      // Blue atmosphere color from the screenshot
-      vec3 color = vec3(0.3, 0.5, 1.0);
+      // pow 5 = very thin rim, subtle like the original
+      float rim = pow(fresnel, 5.0) * 1.0;
+      // Muted blue matching original atmosphere edge
+      vec3 color = vec3(0.2, 0.4, 0.9);
       gl_FragColor = vec4(color, rim);
     }
   `;
 
-  const atmosphereGeometry = new THREE.SphereGeometry(1.025, 64, 64);
+  const atmosphereGeometry = new THREE.SphereGeometry(1.018, 64, 64);
   const atmosphereMaterial = new THREE.ShaderMaterial({
     vertexShader: atmosphereVert,
     fragmentShader: atmosphereFrag,
@@ -145,7 +144,6 @@ export function initGlobe() {
 
     // Subtle mouse tilt
     const targetRotX = mouseY * 0.05;
-    const targetRotY = mouseX * 0.05;
     terrainMesh.rotation.x += (targetRotX - terrainMesh.rotation.x) * 0.02;
     cloudsMesh.rotation.x += (targetRotX - cloudsMesh.rotation.x) * 0.02;
     atmosphereMesh.rotation.x += (targetRotX - atmosphereMesh.rotation.x) * 0.02;
