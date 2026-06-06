@@ -355,6 +355,23 @@
   position: relative;
 }
 
+.form-logo {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 5;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  text-decoration: none;
+  opacity: 0;
+  animation: fadeSlideDown 0.8s ease-out 0.3s forwards;
+}
+
+.form-logo span { color: var(--accent); }
+
 .login-form-panel::before {
   content: '';
   position: absolute;
