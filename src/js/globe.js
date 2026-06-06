@@ -27,12 +27,18 @@ export function initGlobe() {
 
   // --- Lighting (emulates the Sun) ---
   const sunColor = new THREE.Color('#ffeedd');
-  const directionalLight = new THREE.DirectionalLight(sunColor, 3.4);
-  directionalLight.position.set(-5, 3, -10);
+  const directionalLight = new THREE.DirectionalLight(sunColor, 3.5);
+  // Position sun to front-left-above so it illuminates the visible hemisphere
+  directionalLight.position.set(-3, 2, 5);
   directionalLight.castShadow = true;
   scene.add(directionalLight);
 
-  const ambientLight = new THREE.AmbientLight(new THREE.Color('#333344'), 0.8);
+  // Secondary fill light from the right for subtle rim lighting
+  const fillLight = new THREE.DirectionalLight(new THREE.Color('#aaccff'), 0.8);
+  fillLight.position.set(3, -1, 2);
+  scene.add(fillLight);
+
+  const ambientLight = new THREE.AmbientLight(new THREE.Color('#445566'), 1.2);
   scene.add(ambientLight);
 
   // --- Earth Group ---
