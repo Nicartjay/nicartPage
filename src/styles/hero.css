@@ -1,0 +1,131 @@
+/* ============================================
+   Hero Section
+   ============================================ */
+
+.hero {
+  padding-block: clamp(100px, 16vw, 200px);
+  position: relative;
+  overflow: hidden;
+  border: none !important;
+}
+
+.hero-center {
+  text-align: center;
+  max-width: 38ch;
+  margin-inline: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.hero h1 { margin-bottom: var(--gap-md); }
+.hero .lead { margin-bottom: var(--gap-lg); margin-inline: auto; }
+
+.hero-cta {
+  display: inline-flex;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Hero particles */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hero-particles .orb {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.hero-particles .orb:nth-child(1) {
+  width: 300px; height: 300px; top: -80px; right: -60px;
+  background: radial-gradient(circle, color-mix(in oklch, var(--accent) 20%, transparent), transparent 70%);
+}
+
+.hero-particles .orb:nth-child(2) {
+  width: 200px; height: 200px; bottom: -40px; left: 10%;
+  background: radial-gradient(circle, color-mix(in oklch, var(--accent) 12%, transparent), transparent 70%);
+}
+
+.hero-particles .orb:nth-child(3) {
+  width: 150px; height: 150px; top: 30%; left: -40px;
+  background: radial-gradient(circle, color-mix(in oklch, var(--accent) 15%, transparent), transparent 70%);
+}
+
+.hero-particles .orb:nth-child(4) {
+  width: 100px; height: 100px; top: 20%; right: 20%;
+  background: radial-gradient(circle, color-mix(in oklch, var(--accent) 18%, transparent), transparent 70%);
+}
+
+.hero-particles .orb:nth-child(5) {
+  width: 250px; height: 250px; bottom: 10%; right: -80px;
+  background: radial-gradient(circle, color-mix(in oklch, var(--accent) 10%, transparent), transparent 70%);
+}
+
+/* Grid lines decoration */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--border) 40%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--border) 40%, transparent) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 20%, transparent 70%);
+}
+
+/* Typed cursor */
+.typed-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* GSAP reveal classes */
+.split-line {
+  overflow: hidden;
+}
+
+.split-line .line {
+  transform: translateY(100%);
+}
+
+/* Scroll-triggered elements */
+[data-animate] {
+  opacity: 0;
+}
+
+[data-animate="fade-up"] {
+  transform: translateY(40px);
+}
+
+[data-animate="fade-left"] {
+  transform: translateX(-40px);
+}
+
+[data-animate="fade-right"] {
+  transform: translateX(40px);
+}
+
+[data-animate="scale-in"] {
+  transform: scale(0.9);
+}
+
+[data-animate="stagger"] > * {
+  opacity: 0;
+  transform: translateY(30px);
+}

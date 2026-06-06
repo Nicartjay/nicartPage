@@ -1,6 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
 # OS files
 .DS_Store
 Thumbs.db
+Desktop.ini
 
 # Editor files
 .idea/
@@ -8,9 +20,16 @@ Thumbs.db
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
 
-# Template source (not needed in deployment)
+# Logs
+*.log
+npm-debug.log*
+
+# Template source (design reference only)
 template/
 
-# Node (in case added later)
-node_modules/
+# Cache
+.cache/
+.parcel-cache/

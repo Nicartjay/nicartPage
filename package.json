@@ -1,0 +1,26 @@
+{
+  "name": "nicart.space",
+  "version": "1.0.0",
+  "description": "Creative Developer Platform — animation-focused landing site",
+  "author": "nicartjay <nicartjay@rakumail.jp>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write \"src/**/*.{js,css,html}\""
+  },
+  "dependencies": {
+    "gsap": "^3.12.7",
+    "lenis": "^1.1.18",
+    "split-type": "^0.3.4"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "vite-plugin-html": "^3.2.2"
+  }
+}

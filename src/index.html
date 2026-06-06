@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>nicart.space · Creative Developer Platform</title>
+  <meta name="description" content="A workspace where code meets craft — ship beautiful projects from one unified environment." />
+  <meta name="theme-color" content="#0b1020" />
+  <meta property="og:title" content="nicart.space — Creative Developer Platform" />
+  <meta property="og:description" content="Build, deploy, and create from one unified environment." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://nicart.space" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <a href="#features" class="mobile-nav-link">Features</a>
+    <a href="#workflow" class="mobile-nav-link">Workflow</a>
+    <a href="#start" class="mobile-nav-link">Get Started</a>
+    <a href="login.html" class="btn btn-primary">Sign In</a>
+  </div>
+
+  <!-- Top Navigation -->
+  <header class="topnav">
+    <div class="container topnav-inner">
+      <a href="index.html" class="logo">nicart<span>.</span>space</a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#start">Get Started</a>
+      </nav>
+      <div class="row" style="gap: 12px;">
+        <a href="login.html" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">Sign In</a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+    <!-- Hero -->
+    <section class="section hero">
+      <div class="hero-grid" data-parallax="-0.1"></div>
+      <div class="hero-particles">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+      </div>
+      <div class="container hero-center hero-content">
+        <p class="eyebrow">CREATIVE DEVELOPER PLATFORM</p>
+        <h1>Build. Deploy. <span style="color: var(--accent);">Create.</span><span class="typed-cursor"></span></h1>
+        <p class="lead">A workspace where code meets craft — ship beautiful projects from one unified environment.</p>
+        <div class="hero-cta">
+          <a href="login.html" class="btn btn-primary cta-glow btn-magnetic">Start Building</a>
+          <a href="#features" class="btn btn-secondary btn-arrow btn-magnetic">Explore</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+      <div class="container stack" style="gap: 56px;">
+        <div style="max-width: 36ch;" data-animate="fade-up">
+          <p class="eyebrow">WHAT YOU GET</p>
+          <h2 class="section-heading">Everything to go from idea to production.</h2>
+        </div>
+        <div class="grid-3" data-animate="stagger">
+          <div class="feature-card feature">
+            <div class="feature-mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <h3>Instant Environments</h3>
+            <p>Spin up dev environments in seconds. Pre-configured with your stack, extensions, and secrets.</p>
+          </div>
+          <div class="feature-card feature">
+            <div class="feature-mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+            </div>
+            <h3>Visual Editor</h3>
+            <p>Drag-and-drop components alongside code. See changes live without switching context.</p>
+          </div>
+          <div class="feature-card feature">
+            <div class="feature-mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            </div>
+            <h3>Smart Deploy</h3>
+            <p>One command to production. Auto-scaling, edge caching, and rollbacks built right in.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workflow / Terminal -->
+    <section class="section" id="workflow">
+      <div class="container grid-2-1">
+        <div class="terminal" data-animate="fade-left">
+          <div class="terminal-bar">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <span class="meta" style="margin-left: auto;">nicart.space/terminal</span>
+          </div>
+          <div class="terminal-body" id="terminal-lines">
+            <div class="terminal-line"><span class="cmd">$</span> nicart deploy --prod</div>
+            <div class="terminal-line"><span class="out">&#9695; Building project...</span></div>
+            <div class="terminal-line"><span class="out">&#9689; Optimizing assets...</span></div>
+            <div class="terminal-line"><span class="out">&#9721; Deploying to edge...</span></div>
+            <div class="terminal-line"><span class="success">&#10003; Live at nicart.space/my-project</span></div>
+            <div class="terminal-line"><span class="meta">  Deployed in 4.2s — 3 regions</span></div>
+          </div>
+        </div>
+        <div class="stack" style="gap: 24px;" data-animate="fade-right">
+          <p class="eyebrow">HOW IT WORKS</p>
+          <h2 class="section-heading">Deploy in seconds, not hours.</h2>
+          <p class="lead" style="max-width: 100%;">Write code, run one command, and watch your project go live across the globe. No config files. No build pipelines to debug.</p>
+          <a href="login.html" class="btn btn-ghost btn-arrow btn-magnetic">Try it yourself</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Strip -->
+    <section class="section" id="start" style="text-align: center;">
+      <div class="container" style="max-width: 600px;" data-animate="scale-in">
+        <h2 class="section-heading">Ready to start building?</h2>
+        <p class="lead" style="margin: 16px auto 32px;">Free for personal projects. No credit card required.</p>
+        <a href="login.html" class="btn btn-primary cta-glow btn-magnetic">Create Your Account</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pagefoot">
+    <div class="container row-between">
+      <span>&copy; nicart.space &middot; 2026</span>
+      <span class="meta">Creative Developer Platform &middot; nicartjay@rakumail.jp</span>
+    </div>
+  </footer>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
