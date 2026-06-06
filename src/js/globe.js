@@ -42,15 +42,11 @@ export function initGlobe() {
   // --- Texture Loader ---
   const textureLoader = new THREE.TextureLoader();
 
-  // NASA Blue Marble textures (public domain, served from reliable CDN)
-  const EARTH_TEXTURE =
-    'https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble.jpg';
-  const EARTH_BUMP =
-    'https://unpkg.com/three-globe@2.41.12/example/img/earth-topology.png';
-  const EARTH_SPECULAR =
-    'https://unpkg.com/three-globe@2.41.12/example/img/earth-water.png';
-  const CLOUDS_TEXTURE =
-    'https://unpkg.com/three-globe@2.41.12/example/img/earth-clouds.png';
+  // NASA Blue Marble textures (local, served from public/textures)
+  const EARTH_TEXTURE = '/textures/earth-blue-marble.jpg';
+  const EARTH_BUMP = '/textures/earth-topology.png';
+  const EARTH_SPECULAR = '/textures/earth-water.png';
+  const CLOUDS_TEXTURE = '/textures/earth-clouds.jpg';
 
   // --- Terrain Sphere ---
   const terrainGeometry = new THREE.SphereGeometry(1, 64, 64);
