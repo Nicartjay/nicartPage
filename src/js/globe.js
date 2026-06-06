@@ -1,6 +1,6 @@
 /**
  * Photorealistic 3D Earth Globe
- * Matching settings from https://codepen.io/enesser/full/pgWjoW (enesser/earth-webgl)
+ * Matching visual from https://codepen.io/enesser/full/pgWjoW (enesser/earth-webgl)
  * Uses Three.js sphere geometry with NASA textures
  */
 
@@ -11,25 +11,10 @@ export function initGlobe() {
   const container = document.getElementById('globe-container');
   if (!container) return;
 
-  // --- Settings (from enesser/earth-webgl, adjusted for sphere geometry) ---
-  const settings = {
-    sunColor: '#ffeedd',
-    sunIntensity: 2.8,
-    ambientLight: '#111111',
-    atmosphereColor: '#001ea3',
-    atmosphereOpacity: 0.15,
-    // Clouds opacity reduced — additive blending on sphere overexposes at 0.9
-    cloudsOpacity: 0.25,
-    cloudsVelocity: 0.002,
-    terrainBumpScale: 0.04,
-    terrainVelocity: 0.001,
-  };
-
   // --- Scene Setup ---
   const scene = new THREE.Scene();
-  // Camera at 5.25 distance (same as enesser main.js)
-  const camera = new THREE.PerspectiveCamera(45, 1, 1, 1000);
-  camera.position.set(5.25, 0, 0);
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+  camera.position.set(0, 0, 2.8);
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -37,78 +22,58 @@ export function initGlobe() {
   });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
+  // Gamma correction for realistic lighting
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
   container.appendChild(renderer.domElement);
 
-  // --- Sun (Directional Light) — position (-1, 1, -10) from enesser ---
-  const directionalLightColor = new THREE.Color(settings.sunColor);
-  const directionalLight = new THREE.DirectionalLight(
-    directionalLightColor,
-    settings.sunIntensity
-  );
-  directionalLight.position.set(-1, 1, -10);
-  directionalLight.castShadow = true;
-  scene.add(directionalLight);
+  // --- Sun (Directional Light) from the RIGHT side ---
+  // In the original screenshot, light comes from front-right/bottom-right
+  const sunLight = new THREE.DirectionalLight(0xffffff, 3.0);
+  sunLight.position.set(5, 2, 3);
+  scene.add(sunLight);
 
-  // --- Ambient Light ---
-  const ambientLightColor = new THREE.Color(settings.ambientLight);
-  const ambientLight = new THREE.AmbientLight(ambientLightColor);
+  // Very dim ambient so dark side isn't totally black (faint city glow feel)
+  const ambientLight = new THREE.AmbientLight(0x0a0a1a, 0.3);
   scene.add(ambientLight);
 
   // --- Texture Loader ---
   const textureLoader = new THREE.TextureLoader();
 
-  // Local textures (NASA public domain)
   const EARTH_TEXTURE = '/textures/earth-blue-marble.jpg';
   const EARTH_BUMP = '/textures/earth-topology.png';
   const EARTH_SPECULAR = '/textures/earth-water.png';
   const CLOUDS_TEXTURE = '/textures/earth-clouds.jpg';
 
-  // --- Terrain Sphere (Earth surface) ---
+  // --- Earth Surface ---
   const terrainGeometry = new THREE.SphereGeometry(1, 64, 64);
   const terrainMaterial = new THREE.MeshPhongMaterial({
     map: textureLoader.load(EARTH_TEXTURE),
     bumpMap: textureLoader.load(EARTH_BUMP),
-    bumpScale: settings.terrainBumpScale,
+    bumpScale: 0.02,
     specularMap: textureLoader.load(EARTH_SPECULAR),
-    specular: new THREE.Color('#111111'),
-    // shininess 0 — from enesser: "make sure the model isn't shiny"
-    shininess: 0,
+    specular: new THREE.Color(0x333333),
+    shininess: 25, // Visible ocean specular like in the original
   });
-  terrainMaterial.receiveShadow = true;
   const terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
   scene.add(terrainMesh);
 
-  // --- Clouds Sphere ---
-  const cloudsGeometry = new THREE.SphereGeometry(1.003, 64, 64);
+  // --- Clouds --- (Normal blending, NOT additive — looks natural like the screenshot)
+  const cloudsGeometry = new THREE.SphereGeometry(1.005, 64, 64);
   const cloudsMaterial = new THREE.MeshPhongMaterial({
     map: textureLoader.load(CLOUDS_TEXTURE),
     transparent: true,
-    opacity: settings.cloudsOpacity,
+    opacity: 0.6,
     depthWrite: false,
-    // Additive blending — from enesser: "cloudsMaterial.blending = THREE.AdditiveBlending"
-    blending: THREE.AdditiveBlending,
+    blending: THREE.NormalBlending, // Normal blending for realistic white clouds
     shininess: 0,
   });
-  cloudsMaterial.castShadow = true;
   const cloudsMesh = new THREE.Mesh(cloudsGeometry, cloudsMaterial);
   scene.add(cloudsMesh);
 
-  // --- Atmosphere Sphere ---
-  // enesser uses a separate mesh with atmosphereColor #001ea3 and opacity 0.22
-  const atmosphereGeometry = new THREE.SphereGeometry(1.015, 64, 64);
-  const atmosphereMaterial = new THREE.MeshPhongMaterial({
-    color: new THREE.Color(settings.atmosphereColor),
-    transparent: true,
-    opacity: settings.atmosphereOpacity,
-    depthWrite: false,
-    shininess: 0,
-    side: THREE.FrontSide,
-  });
-  const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-  scene.add(atmosphereMesh);
-
-  // --- Outer Glow (Fresnel rim — additional enhancement) ---
-  const glowVertexShader = `
+  // --- Atmosphere (thin blue rim glow — Fresnel) ---
+  const atmosphereVert = `
     varying vec3 vNormal;
     varying vec3 vPosition;
     void main() {
@@ -117,47 +82,40 @@ export function initGlobe() {
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `;
-  const glowFragmentShader = `
+  const atmosphereFrag = `
     varying vec3 vNormal;
     varying vec3 vPosition;
-    uniform vec3 uColor;
-    uniform float uIntensity;
     void main() {
       vec3 viewDir = normalize(-vPosition);
       float fresnel = 1.0 - dot(viewDir, vNormal);
-      fresnel = pow(fresnel, 3.5) * uIntensity;
-      gl_FragColor = vec4(uColor, fresnel);
+      // Tight rim: pow 4 makes it thin, matching the screenshot edge glow
+      float rim = pow(fresnel, 4.0) * 1.4;
+      // Blue atmosphere color from the screenshot
+      vec3 color = vec3(0.3, 0.5, 1.0);
+      gl_FragColor = vec4(color, rim);
     }
   `;
 
-  const outerGlowGeometry = new THREE.SphereGeometry(1.06, 64, 64);
-  const outerGlowMaterial = new THREE.ShaderMaterial({
-    vertexShader: glowVertexShader,
-    fragmentShader: glowFragmentShader,
-    uniforms: {
-      uColor: { value: new THREE.Color('#4488ff') },
-      uIntensity: { value: 1.2 },
-    },
+  const atmosphereGeometry = new THREE.SphereGeometry(1.025, 64, 64);
+  const atmosphereMaterial = new THREE.ShaderMaterial({
+    vertexShader: atmosphereVert,
+    fragmentShader: atmosphereFrag,
     transparent: true,
     depthWrite: false,
     side: THREE.FrontSide,
     blending: THREE.AdditiveBlending,
   });
-  const outerGlow = new THREE.Mesh(outerGlowGeometry, outerGlowMaterial);
-  scene.add(outerGlow);
+  const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+  scene.add(atmosphereMesh);
 
-  // --- Mouse Interaction (from enesser main.js) ---
+  // --- Mouse Interaction ---
   let mouseX = 0,
     mouseY = 0;
-  const windowHalfX = container.clientWidth / 2;
-  const windowHalfY = container.clientHeight / 2;
 
   container.addEventListener('mousemove', (e) => {
-    if (e.buttons) {
-      const rect = container.getBoundingClientRect();
-      mouseX = (e.clientX - rect.left - windowHalfX) / 2;
-      mouseY = (e.clientY - rect.top - windowHalfY) / 2;
-    }
+    const rect = container.getBoundingClientRect();
+    mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
   });
 
   container.addEventListener('mouseleave', () => {
@@ -175,26 +133,20 @@ export function initGlobe() {
   resize();
   window.addEventListener('resize', resize);
 
-  // --- Animation Loop (from enesser main.js render function) ---
+  // --- Animation Loop ---
   function animate() {
     requestAnimationFrame(animate);
 
-    // Camera with mouse influence (from enesser):
-    // camera.position.set(5.25, 0, 0);
-    // camera.position.x += (mouseX - camera.position.x) * 0.005;
-    // camera.position.y += (-mouseY - camera.position.y) * 0.005;
-    camera.position.x += (5.25 + mouseX * 0.005 - camera.position.x) * 0.01;
-    camera.position.y += (-mouseY * 0.005 - camera.position.y) * 0.01;
-    camera.lookAt(scene.position);
+    // Slow rotation
+    terrainMesh.rotation.y += 0.001;
+    cloudsMesh.rotation.y += 0.0015;
 
-    // Rotate clouds (from enesser settings: cloudsVelocity 0.002)
-    cloudsMesh.rotation.y += settings.cloudsVelocity;
-
-    // Rotate terrain (from enesser settings: terrainVelocity 0.001)
-    terrainMesh.rotation.y += settings.terrainVelocity;
-
-    // Atmosphere rotates with terrain
-    atmosphereMesh.rotation.y += settings.terrainVelocity;
+    // Subtle mouse tilt
+    const targetRotX = mouseY * 0.05;
+    const targetRotY = mouseX * 0.05;
+    terrainMesh.rotation.x += (targetRotX - terrainMesh.rotation.x) * 0.02;
+    cloudsMesh.rotation.x += (targetRotX - cloudsMesh.rotation.x) * 0.02;
+    atmosphereMesh.rotation.x += (targetRotX - atmosphereMesh.rotation.x) * 0.02;
 
     renderer.render(scene, camera);
   }
@@ -203,9 +155,8 @@ export function initGlobe() {
   terrainMesh.scale.set(0, 0, 0);
   cloudsMesh.scale.set(0, 0, 0);
   atmosphereMesh.scale.set(0, 0, 0);
-  outerGlow.scale.set(0, 0, 0);
 
-  gsap.to([terrainMesh.scale, cloudsMesh.scale, atmosphereMesh.scale, outerGlow.scale], {
+  gsap.to([terrainMesh.scale, cloudsMesh.scale, atmosphereMesh.scale], {
     x: 1,
     y: 1,
     z: 1,
