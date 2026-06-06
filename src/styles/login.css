@@ -94,8 +94,46 @@
 /* Center logo */
 .visual-brand {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   text-align: center;
+}
+
+/* Large brand text behind the globe */
+.visual-brand-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.visual-brand-bg .brand-text-large {
+  font-family: var(--font-display);
+  font-size: clamp(80px, 12vw, 160px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+  user-select: none;
+  animation: brandFloat 8s ease-in-out infinite, brandFadeIn 2s ease-out forwards;
+  opacity: 0;
+}
+
+.visual-brand-bg .brand-text-large .dot {
+  color: rgba(99, 179, 237, 0.12);
+}
+
+@keyframes brandFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.01); }
+}
+
+@keyframes brandFadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .visual-brand .logo-large {
@@ -449,7 +487,7 @@
   left: -40%;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
   display: flex;
   align-items: center;
