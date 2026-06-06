@@ -107,33 +107,88 @@ export function initLoginAnimations() {
     }, 0.4);
   }
 
-  // Parallax on visual panel
+  // Interactive mouse repulsion on visual panel
   const visual = document.querySelector('.login-visual');
   if (visual) {
+    const shapePositions = [];
+    shapes.forEach((shape) => {
+      const rect = shape.getBoundingClientRect();
+      const parentRect = visual.getBoundingClientRect();
+      shapePositions.push({
+        cx: rect.left - parentRect.left + rect.width / 2,
+        cy: rect.top - parentRect.top + rect.height / 2,
+      });
+    });
+
     visual.addEventListener('mousemove', (e) => {
       const rect = visual.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
 
       shapes.forEach((shape, i) => {
-        const depth = (i + 1) * 8;
-        gsap.to(shape, {
-          x: x * depth,
-          y: y * depth,
-          duration: 0.8,
-          ease: 'power2.out',
-        });
+        const shapeRect = shape.getBoundingClientRect();
+        const shapeCX = shapeRect.left - rect.left + shapeRect.width / 2;
+        const shapeCY = shapeRect.top - rect.top + shapeRect.height / 2;
+
+        const dx = shapeCX - mouseX;
+        const dy = shapeCY - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const maxRadius = 200;
+
+        if (distance < maxRadius) {
+          const force = (1 - distance / maxRadius) * 60;
+          const angle = Math.atan2(dy, dx);
+          const pushX = Math.cos(angle) * force;
+          const pushY = Math.sin(angle) * force;
+          const scaleBump = 1 + (1 - distance / maxRadius) * 0.3;
+
+          shape.classList.add('near-cursor');
+          gsap.to(shape, {
+            x: `+=${pushX * 0.3}`,
+            y: `+=${pushY * 0.3}`,
+            scale: scaleBump,
+            opacity: 0.9,
+            duration: 0.4,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
+        } else {
+          shape.classList.remove('near-cursor');
+          gsap.to(shape, {
+            scale: 1,
+            opacity: 0.6,
+            duration: 1.2,
+            ease: 'elastic.out(1, 0.4)',
+            overwrite: 'auto',
+          });
+        }
       });
 
-      // Subtle movement on logo
+      // Subtle parallax on logo
       if (logoLarge) {
+        const nx = (mouseX / rect.width - 0.5) * 10;
+        const ny = (mouseY / rect.height - 0.5) * 10;
         gsap.to(logoLarge, {
-          x: x * 5,
-          y: y * 5,
+          x: nx,
+          y: ny,
           duration: 1,
           ease: 'power2.out',
         });
       }
+    });
+
+    // Reset on mouse leave
+    visual.addEventListener('mouseleave', () => {
+      shapes.forEach((shape) => {
+        shape.classList.remove('near-cursor');
+        gsap.to(shape, {
+          scale: 1,
+          opacity: 0.6,
+          duration: 1.5,
+          ease: 'elastic.out(1, 0.3)',
+          overwrite: 'auto',
+        });
+      });
     });
   }
 }

@@ -47,6 +47,13 @@
   will-change: transform;
   opacity: 0;
   animation: shapeAppear 1.5s ease-out forwards;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.geo-shape.near-cursor {
+  border-color: color-mix(in oklch, var(--accent) 80%, transparent);
+  box-shadow: 0 0 20px color-mix(in oklch, var(--accent) 30%, transparent),
+              inset 0 0 10px color-mix(in oklch, var(--accent) 10%, transparent);
 }
 
 .geo-shape:nth-child(1) {
