@@ -25,9 +25,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Cursor light on form side
   initCursorLight();
-
-  // 3D Globe (lazy-loaded) in visual panel
-  if (document.getElementById('globe-container')) {
-    import('./js/globe').then(({ initGlobe }) => initGlobe());
-  }
 });
