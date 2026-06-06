@@ -98,42 +98,60 @@
   text-align: center;
 }
 
-/* Large brand text behind the globe */
-.visual-brand-bg {
+/* Logo top-left corner (same style as index nav) */
+.visual-logo {
   position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.visual-brand-bg .brand-text-large {
+  top: 24px;
+  left: 28px;
+  z-index: 5;
   font-family: var(--font-display);
-  font-size: clamp(80px, 12vw, 160px);
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  color: rgba(255, 255, 255, 0.06);
-  white-space: nowrap;
-  user-select: none;
-  animation: brandFloat 8s ease-in-out infinite, brandFadeIn 2s ease-out forwards;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  text-decoration: none;
   opacity: 0;
+  animation: fadeSlideDown 0.8s ease-out 0.3s forwards;
 }
 
-.visual-brand-bg .brand-text-large .dot {
-  color: rgba(99, 179, 237, 0.12);
+.visual-logo span { color: var(--accent); }
+
+/* Hero text beside the globe */
+.visual-hero-text {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  text-align: left;
 }
 
-@keyframes brandFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-8px) scale(1.01); }
+.visual-hero-text .hero-word {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+  opacity: 0;
+  transform: translateX(30px);
+  animation: heroWordIn 0.8s ease-out forwards;
 }
 
-@keyframes brandFadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+.visual-hero-text .hero-word:nth-child(1) { animation-delay: 0.5s; }
+.visual-hero-text .hero-word:nth-child(2) { animation-delay: 0.7s; }
+.visual-hero-text .hero-word:nth-child(3) { animation-delay: 0.9s; }
+
+@keyframes heroWordIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .visual-brand .logo-large {
