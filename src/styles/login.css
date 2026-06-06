@@ -101,7 +101,7 @@
 /* Logo top-left corner (same style as index nav) */
 .visual-logo {
   position: absolute;
-  top: 24px;
+  bottom: 24px;
   left: 28px;
   z-index: 5;
   font-family: var(--font-display);
