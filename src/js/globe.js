@@ -65,7 +65,7 @@ export function initGlobe() {
   const cloudsMaterial = new THREE.MeshPhongMaterial({
     map: textureLoader.load(CLOUDS_TEXTURE),
     transparent: true,
-    opacity: 0.45,
+    opacity: 0.65,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
     shininess: 0,
