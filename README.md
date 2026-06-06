@@ -1,21 +1,19 @@
 # nicart.space
 
-> Creative Developer Platform — An animation-focused landing site built with modern web technologies.
-
-[![Deploy to Cloudflare Pages](https://github.com/Nicartjay/nicartPage/actions/workflows/deploy.yml/badge.svg)](https://github.com/Nicartjay/nicartPage/actions/workflows/deploy.yml)
+> Creative Developer Platform — An animation-focused, space-themed landing site built with modern web technologies and WebGL.
 
 ---
 
 ## Overview
 
-**nicart.space** is a high-performance, animation-heavy landing page for a creative developer platform. The site emphasizes fluid motion design, micro-interactions, and smooth scrolling to deliver an immersive user experience.
+**nicart.space** is a high-performance, animation-heavy landing page for a creative developer platform. The site features a space/astronomy theme with a photorealistic 3D Earth globe, warp-speed starfield, scroll-driven parallax effects, and immersive micro-interactions.
 
 ### Pages
 
 | Page | Description |
 |------|-------------|
-| `index.html` | Landing page with hero animations, feature cards, terminal demo, and CTAs |
-| `login.html` | Sign-in page with split-screen layout, geometric animations, and form validation |
+| `index.html` | Landing page with hero animations, 3D globe, feature cards, terminal demo, depth stack showcase, and cursor reveal |
+| `login.html` | Sign-in page with photorealistic Earth WebGL background, animated geometric shapes, starfield, and form validation |
 
 ---
 
@@ -23,8 +21,9 @@
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Build** | [Vite](https://vite.dev/) | Lightning-fast bundler with HMR |
-| **Animation** | [GSAP](https://gsap.com/) | Professional-grade animation engine |
+| **Build** | [Vite 8](https://vite.dev/) | Lightning-fast bundler with HMR |
+| **3D** | [Three.js](https://threejs.org/) | Photorealistic Earth globe with shaders |
+| **Animation** | [GSAP 3.15](https://gsap.com/) + ScrollTrigger | Professional-grade animation engine |
 | **Scroll** | [Lenis](https://lenis.darkroom.engineering/) | Smooth scroll with momentum |
 | **Text** | [SplitType](https://www.splittype.com/) | Per-character/word text animation |
 | **Styling** | Vanilla CSS | Custom properties, `color-mix()`, `oklch` |
@@ -33,33 +32,46 @@
 
 ---
 
-## Animation Features
+## Animation & Visual Features
+
+### Photorealistic Earth Globe (Three.js)
+- NASA Blue Marble textures (terrain, bump map, specular water, clouds)
+- Fresnel atmosphere glow shader (inner rim + outer halo)
+- Auto-rotating terrain + cloud layers at different speeds
+- ACES tone mapping with sRGB color space
+- Mouse-driven parallax rotation
+- Elastic scale-in entrance animation
+- Lazy-loaded (code-split) for performance
+
+### Space Background Effects
+- **Starfield Canvas** — 600 stars with warp-speed acceleration on scroll
+- **Scroll Stars** — 3 parallax star layers with twinkling + random shooting stars
+- **Space Planet** — CSS animated orb with cloud rotation, ring, orbiting dots
+
+### Interactive Elements
+- **Magnetic buttons** — Attract toward cursor on hover
+- **Cursor light** — Ambient radial glow follows mouse (desktop)
+- **Feature card glow** — Mouse-tracking radial gradient
+- **Depth Stack** — 3D perspective card showcase with focus shift
+- **Cursor Reveal** — Circular mask reveals gradient text on hover
+- **Geo-shape interaction** — Login shapes repel from cursor with magnetic physics
+
+### Scroll Animations
+- Lenis smooth scroll connected to GSAP ScrollTrigger
+- `fade-up`, `fade-left`, `fade-right`, `scale-in` reveal types via data attributes
+- Stagger children, section heading clip-path reveals
+- Parallax layers via `data-parallax` attribute
 
 ### Hero Section
-- **Character-split headline** — Each letter animates in with 3D rotation via GSAP + SplitType
-- **Floating particle orbs** — Elastic entrance + continuous random-drift motion
-- **Grid pulse** — Background grid with parallax scroll and opacity breathing
-- **Staggered CTA reveal** — Buttons spring-in with `back.out` easing
-
-### Interactions
-- **Magnetic buttons** — Buttons attract toward cursor on hover, snap back with elastic easing
-- **Cursor light** — Subtle ambient radial gradient follows the mouse (desktop only)
-- **Feature card glow** — Mouse-tracking radial gradient on hover
-- **Terminal typing** — Lines animate in sequence on scroll, reset on re-entry
-
-### Scroll
-- **Lenis smooth scroll** — Connected to GSAP ScrollTrigger for scroll-driven animations
-- **ScrollTrigger reveals** — `fade-up`, `fade-left`, `fade-right`, `scale-in`, `stagger` animations
-- **Parallax layers** — Data-attribute driven parallax with configurable speed
-- **Section headings** — Clip-path reveal animation on scroll
+- Character-split 3D headline with `back.out` easing (SplitType + GSAP)
+- Floating particle orbs with elastic entrance + continuous drift
+- Pulsing grid background
 
 ### Login Page
-- **Geometric shapes** — GSAP-driven continuous float with parallax mouse response
-- **Orbiting dots** — Infinite rotation around the brand logo
-- **Mesh gradient** — Slowly morphing background with scale/rotation
-- **Stagger form reveal** — Each form element fades up in sequence
-- **Ripple submit** — Click ripple effect on the sign-in button
-- **Loading shimmer** — Gradient sweep during form submission
+- Photorealistic Earth right-half visible as background
+- 12 animated geometric shapes with mouse repulsion physics
+- Starfield + scroll stars ambient effects
+- Staggered form reveal + toast notifications + ripple submit
 
 ---
 
@@ -67,36 +79,48 @@
 
 ```
 nicart.space/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          # CI/CD — build & deploy to Cloudflare Pages
-├── public/                     # Static assets (copied as-is to dist/)
+├── .github/workflows/deploy.yml    # CI/CD (optional, Cloudflare Pages)
+├── public/
+│   ├── textures/                   # NASA Earth textures (local, no CORS)
+│   │   ├── earth-blue-marble.jpg   # 1.4MB — surface color
+│   │   ├── earth-topology.png      # 369KB — bump/height map
+│   │   ├── earth-water.png         # 420KB — specular (water)
+│   │   └── earth-clouds.jpg        # 829KB — cloud layer
+│   └── robots.txt
 ├── src/
 │   ├── styles/
-│   │   ├── base.css            # Design tokens, reset, scrollbar, selection
-│   │   ├── layout.css          # Grid system, typography utilities
-│   │   ├── components.css      # Nav, buttons, cards, terminal, footer
-│   │   ├── hero.css            # Hero section, particles, typed cursor
-│   │   └── login.css           # Login page specific styles
+│   │   ├── base.css                # Design tokens, reset, scrollbar
+│   │   ├── layout.css              # Grid, typography utilities
+│   │   ├── components.css          # Nav, buttons, cards, terminal, footer
+│   │   ├── hero.css                # Hero section, particles, data-animate
+│   │   ├── login.css               # Login page (visual panel, form, shapes)
+│   │   └── space.css               # Globe, planet, depth-stack, cursor-reveal
 │   ├── js/
-│   │   ├── smooth-scroll.js    # Lenis + GSAP ScrollTrigger integration
-│   │   ├── hero-animations.js  # GSAP timeline — hero entrance sequence
-│   │   ├── scroll-animations.js # ScrollTrigger-based reveals
-│   │   ├── interactions.js     # Card glow, nav highlighting
-│   │   ├── cursor-light.js     # Mouse-following ambient light
-│   │   ├── magnetic-buttons.js # Magnetic hover effect
-│   │   ├── terminal.js         # Terminal typing animation
-│   │   ├── mobile-nav.js       # Mobile navigation
-│   │   ├── login-animations.js # Login page GSAP animations
-│   │   └── login-form.js       # Form validation & interactions
-│   ├── index.html              # Landing page
-│   ├── login.html              # Login page
-│   ├── main.js                 # Entry point — landing page
-│   └── login-main.js           # Entry point — login page
-├── template/                   # Original design references (gitignored)
+│   │   ├── utils.js                # Shared helpers (getRelativeMousePos, clamp, lerp)
+│   │   ├── smooth-scroll.js        # Lenis + GSAP ScrollTrigger sync
+│   │   ├── hero-animations.js      # GSAP hero entrance sequence
+│   │   ├── scroll-animations.js    # ScrollTrigger reveal system
+│   │   ├── interactions.js         # Card glow, nav highlighting
+│   │   ├── cursor-light.js         # Mouse-following ambient glow
+│   │   ├── magnetic-buttons.js     # Magnetic hover effect
+│   │   ├── terminal.js             # Terminal typing animation
+│   │   ├── mobile-nav.js           # Mobile hamburger menu
+│   │   ├── starfield.js            # Canvas warp-speed starfield
+│   │   ├── scroll-stars.js         # Parallax star layers + shooting stars
+│   │   ├── globe.js                # Three.js photorealistic Earth
+│   │   ├── space-planet.js         # CSS animated planet orb
+│   │   ├── depth-stack.js          # 3D perspective card stack
+│   │   ├── cursor-reveal.js        # Circular mask reveal
+│   │   ├── login-animations.js     # Login page GSAP + shape physics
+│   │   └── login-form.js           # Form validation & interactions
+│   ├── index.html                  # Landing page
+│   ├── login.html                  # Login page
+│   ├── main.js                     # Entry — landing page
+│   └── login-main.js              # Entry — login page
 ├── .gitignore
 ├── package.json
 ├── vite.config.js
+├── wrangler.toml                   # Cloudflare Pages config
 ├── README.md
 ├── CONTRIBUTING.md
 ├── CHANGELOG.md
@@ -115,30 +139,20 @@ nicart.space/
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/Nicartjay/nicartPage.git
 cd nicartPage
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 
-The dev server starts at `http://localhost:3000` with hot module replacement (HMR).
+Dev server starts at `http://localhost:3000` with HMR.
 
 ### Build
 
 ```bash
-# Production build
-npm run build
-
-# Preview the production build locally
-npm run preview
+npm run build    # Production build → dist/
+npm run preview  # Preview production locally
 ```
-
-Output is generated in the `dist/` directory.
 
 ---
 
@@ -146,74 +160,48 @@ Output is generated in the `dist/` directory.
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start Vite dev server with HMR on port 3000 |
-| `npm run build` | Build for production (minified, tree-shaken) |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run ESLint on source files |
-| `npm run format` | Format code with Prettier |
+| `npm run dev` | Vite dev server with HMR (port 3000) |
+| `npm run build` | Production build (minified, tree-shaken, code-split) |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | ESLint on source files |
+| `npm run format` | Prettier formatting |
 
 ---
 
-## Deployment
+## Deployment (Cloudflare Pages)
 
-### Cloudflare Pages (Recommended)
+The site is deployed via Cloudflare Pages connected directly to the GitHub repository.
 
-The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that automatically builds and deploys on every push to `main`.
+**Cloudflare Pages Settings:**
 
-**Setup:**
+| Setting | Value |
+|---------|-------|
+| Production branch | `main` |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
 
-1. Create a Cloudflare Pages project named `nicart-space`
-2. Add these secrets to your GitHub repository:
-   - `CLOUDFLARE_API_TOKEN` — API token with Pages edit permissions
-   - `CLOUDFLARE_ACCOUNT_ID` — Your Cloudflare account ID
-3. Push to `main` — deployment is automatic
-
-**Manual deploy:**
-
-```bash
-npm run build
-npx wrangler pages deploy dist --project-name=nicart-space
-```
-
-### Other Platforms
-
-Since this builds to static files, it works on any static host:
-
-| Platform | Build Command | Output Dir |
-|----------|---------------|------------|
-| Cloudflare Pages | `npm run build` | `dist` |
-| Vercel | `npm run build` | `dist` |
-| Netlify | `npm run build` | `dist` |
-| GitHub Pages | `npm run build` | `dist` |
+Deploys automatically on every push to `main`.
 
 ---
 
 ## Design System
 
-### Color Palette
+### Colors
 
 | Token | Value | Usage |
 |-------|-------|-------|
 | `--bg` | `#0b1020` | Page background |
 | `--surface` | `#131b2f` | Card/panel backgrounds |
-| `--accent` | `#60a5fa` | Primary accent (blue) |
+| `--accent` | `#60a5fa` | Primary blue accent |
 | `--success` | `#22c55e` | Success states |
 | `--warn` | `#fbbf24` | Warning states |
 | `--danger` | `#fb7185` | Error states |
 
 ### Typography
 
-- **Display/Headings:** Inter (700, -0.02em tracking)
-- **Body:** Inter (400, 1.55 line-height)
-- **Code/Mono:** JetBrains Mono (400)
-
-### Easing Curves
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--ease-out-expo` | `cubic-bezier(0.16, 1, 0.3, 1)` | Exits, reveals |
-| `--ease-spring` | `cubic-bezier(0.2, 0, 0, 1)` | Default transitions |
-| `--ease-out-quint` | `cubic-bezier(0.22, 1, 0.36, 1)` | Smooth deceleration |
+- **Display/Headings:** Inter 700 (-0.02em tracking)
+- **Body:** Inter 400 (1.55 line-height)
+- **Code/Mono:** JetBrains Mono 400
 
 ---
 
@@ -223,17 +211,17 @@ Since this builds to static files, it works on any static host:
 - Firefox 110+
 - Safari 16.4+
 
-Uses modern CSS features: `color-mix()`, `oklch`, `text-wrap: balance`, CSS nesting (via build).
+Requires WebGL for the 3D globe. Falls back gracefully without it.
 
 ---
 
 ## Performance
 
-- **No framework** — Zero JS framework overhead
-- **Tree-shaken GSAP** — Only imported modules are bundled
-- **CSS-first** — Animations use CSS for anything that doesn't need JS control
-- **Lazy animations** — ScrollTrigger only activates when elements enter viewport
-- **Preconnect** — Font loading optimized with preconnect hints
+- **Code-split globe** — Three.js loaded on-demand (~130KB gzip)
+- **Tree-shaken GSAP** — Only imported modules bundled
+- **Local textures** — No CORS / third-party CDN dependencies
+- **Lazy animations** — ScrollTrigger activates only in viewport
+- **Preconnect** — Font loading optimized
 
 ---
 

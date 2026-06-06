@@ -7,65 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.0] — 2026-06-06
+
+### Added
+
+- **Photorealistic Earth Globe** — Three.js sphere with NASA Blue Marble textures, bump map, specular highlights, rotating cloud layer, Fresnel atmosphere shader, ACES tone mapping
+- **Starfield Background** — Canvas-based 600-star warp-speed animation with scroll acceleration
+- **Scroll Stars** — 3 parallax star layers (240 elements) with twinkling + shooting stars
+- **Space Planet** — CSS animated orb with rotating clouds, glow ring, orbiting dots
+- **Depth Stack Showcase** — 3D perspective card layout with mouse-driven focus shift
+- **Cursor Reveal** — Circular clip-path mask follows cursor to reveal gradient text
+- **Login Page Earth** — Photorealistic globe as right-half background in login visual panel
+- **Login Shape Physics** — 12 geometric shapes with mouse repulsion, magnetic pull, glow effects
+- **Shared Utilities** — `src/js/utils.js` with `getRelativeMousePos`, `clamp`, `lerp`
+- **Local Textures** — NASA Earth textures served from `public/textures/` (no CORS)
+- **Wrangler Config** — `wrangler.toml` for Cloudflare Pages deployment
+
+### Changed
+
+- **Vite** upgraded from 6.x to 8.0.16
+- **GSAP** upgraded from 3.12 to 3.15
+- **Lenis** upgraded from 1.1 to 1.3
+- **ESLint** upgraded from 9.x to 10.4
+- **Prettier** upgraded from 3.4 to 3.8
+- Globe lazy-loaded via dynamic `import()` for code-splitting (~130KB gzip chunk)
+- Login visual panel darkened (near-black) for better globe contrast
+- Navigation expanded with Universe, Showcase section links
+
+### Refactored
+
+- Removed dead code: unused parameters, unreachable returns, computed-but-unread variables
+- Consolidated scroll animation blocks into config-driven loop
+- `cursor-light.js` optimized with `gsap.quickSetter` instead of ticker
+- `depth-stack.js` guards animation with ScrollTrigger visibility check
+- Deleted unused `public/textures/earth-clouds.png`
+- Net reduction: -94 lines of code
+
+### Fixed
+
+- Globe CORS errors — textures now served locally
+- Globe oval distortion — camera locked to 1:1 aspect ratio
+- Sun lighting — repositioned to illuminate visible hemisphere
+- Cloudflare Pages deployment — added `wrangler.toml` with `[assets] directory`
+
+---
+
 ## [1.0.0] — 2026-06-06
 
 ### Added
 
-- **Build System** — Vite 6 with multi-page HTML support, Terser minification
-- **Animation Engine** — GSAP 3.12 with ScrollTrigger for scroll-driven animations
-- **Smooth Scroll** — Lenis for buttery-smooth momentum scrolling
-- **Text Animations** — SplitType for per-character/word headline animations
-- **Hero Section**
-  - Character-split 3D headline reveal with `back.out` easing
-  - Floating particle orbs with elastic entrance + random drift
-  - Pulsing grid background with parallax
-  - Staggered CTA button spring-in
-- **Interactive Elements**
-  - Magnetic button hover effect (attract toward cursor)
-  - Cursor-following ambient light (desktop only)
-  - Mouse-tracking radial glow on feature cards
-  - Nav link underline animation on scroll position
-- **Terminal Demo**
-  - ScrollTrigger-activated line-by-line typing animation
-  - Cursor blink after sequence completes
-  - Resets on scroll re-entry
-- **Login Page**
-  - GSAP-animated geometric shapes with parallax mouse response
-  - Orbiting dots with infinite rotation
-  - Morphing mesh gradient background
-  - Staggered form element reveal
-  - Click ripple effect on submit button
-  - Loading shimmer + success state transitions
-  - Toast notification system
-  - Email/password validation with error states
-- **Scroll Animations**
-  - `fade-up`, `fade-left`, `fade-right`, `scale-in` reveal types
-  - Stagger children animation via data attributes
-  - Section heading clip-path reveal
-  - Configurable parallax via `data-parallax` attribute
-- **Responsive Design**
-  - Mobile hamburger menu with GSAP link animations
-  - Adaptive grid layouts (3-col → 1-col)
-  - Touch-friendly interactions
-- **Developer Experience**
-  - Hot Module Replacement (HMR) via Vite
-  - Modular CSS architecture (base, layout, components, page-specific)
-  - Modular JS architecture (one file per concern)
-  - ESLint + Prettier configuration
-- **CI/CD**
-  - GitHub Actions workflow for automatic Cloudflare Pages deployment
-- **Documentation**
-  - Comprehensive README with animation catalog
-  - Contributing guide with animation guidelines
-  - MIT License
-
-### Technical Details
-
-- **Dependencies:** gsap, lenis, split-type
-- **Dev Dependencies:** vite, eslint, prettier, vite-plugin-html
-- **Browser Support:** Chrome 105+, Firefox 110+, Safari 16.4+
-- **CSS Features:** `color-mix()`, `oklch`, `clamp()`, custom properties, `text-wrap: balance`
-- **Deploy Target:** Cloudflare Pages (static, edge-deployed)
+- **Build System** — Vite with multi-page HTML support, Terser minification
+- **Animation Engine** — GSAP with ScrollTrigger for scroll-driven animations
+- **Smooth Scroll** — Lenis for momentum scrolling
+- **Text Animations** — SplitType for per-character headline animations
+- **Hero Section** — Character-split 3D reveal, floating orbs, pulsing grid, staggered CTAs
+- **Interactive Elements** — Magnetic buttons, cursor light, feature card glow, nav scroll highlighting
+- **Terminal Demo** — ScrollTrigger-activated typing sequence with cursor blink
+- **Login Page** — Split-screen layout, staggered form reveal, social auth, toast notifications, parallax shapes
+- **CI/CD** — GitHub Actions workflow for Cloudflare Pages
+- **Documentation** — README, CONTRIBUTING, CHANGELOG, LICENSE
 
 ---
 
@@ -76,5 +76,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial static HTML/CSS/JS prototype
 - Landing page with CSS-only animations
 - Login page with inline JavaScript
-- Basic IntersectionObserver scroll reveals
-- Pure CSS floating orbs and grid pulse
