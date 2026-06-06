@@ -11,14 +11,15 @@ export function initGlobe() {
   const container = document.getElementById('globe-container');
   if (!container) return;
 
-  // --- Settings (matched from enesser/earth-webgl settings.js) ---
+  // --- Settings (from enesser/earth-webgl, adjusted for sphere geometry) ---
   const settings = {
     sunColor: '#ffeedd',
-    sunIntensity: 3.4,
-    ambientLight: '#555555',
+    sunIntensity: 2.8,
+    ambientLight: '#111111',
     atmosphereColor: '#001ea3',
-    atmosphereOpacity: 0.22,
-    cloudsOpacity: 0.9,
+    atmosphereOpacity: 0.15,
+    // Clouds opacity reduced — additive blending on sphere overexposes at 0.9
+    cloudsOpacity: 0.25,
     cloudsVelocity: 0.002,
     terrainBumpScale: 0.04,
     terrainVelocity: 0.001,
