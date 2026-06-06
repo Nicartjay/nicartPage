@@ -24,7 +24,7 @@ export function initGlobe() {
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.8;
+  renderer.toneMappingExposure = 1.1;
   container.appendChild(renderer.domElement);
 
   // --- Sun (Directional Light) ---
@@ -48,8 +48,10 @@ export function initGlobe() {
 
   // --- Earth Surface ---
   const terrainGeometry = new THREE.SphereGeometry(1, 64, 64);
+  const earthMap = textureLoader.load(EARTH_TEXTURE);
+  earthMap.colorSpace = THREE.SRGBColorSpace;
   const terrainMaterial = new THREE.MeshPhongMaterial({
-    map: textureLoader.load(EARTH_TEXTURE),
+    map: earthMap,
     bumpMap: textureLoader.load(EARTH_BUMP),
     bumpScale: 0.08,
     specularMap: textureLoader.load(EARTH_SPECULAR),
