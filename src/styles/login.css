@@ -445,8 +445,8 @@
 .login-globe {
   position: absolute;
   top: 0;
-  /* Position so globe center aligns with left edge — only right half visible */
-  left: -50%;
+  /* Position so globe is slightly more to the right */
+  left: -40%;
   width: 100%;
   height: 100%;
   z-index: 1;
