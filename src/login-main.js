@@ -12,7 +12,6 @@ import { initLoginAnimations } from './js/login-animations';
 import { initLoginForm } from './js/login-form';
 import { initStarfield } from './js/starfield';
 import { initScrollStars } from './js/scroll-stars';
-import { initSpacePlanet } from './js/space-planet';
 import { initCursorLight } from './js/cursor-light';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,9 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Login page animations & form
   initLoginAnimations();
   initLoginForm();
-
-  // Space planet in visual panel
-  initSpacePlanet();
 
   // Cursor light on form side
   initCursorLight();
