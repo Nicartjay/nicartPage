@@ -1,0 +1,409 @@
+/* ============================================
+   Space Effects & Globe Styles
+   ============================================ */
+
+/* Starfield Canvas */
+#starfield {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Scroll Stars Container */
+#scroll-stars {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+@keyframes starTwinkle {
+  0% { opacity: 0.2; transform: scale(0.8); }
+  100% { opacity: 0.8; transform: scale(1.2); }
+}
+
+/* ============================================
+   Globe Section
+   ============================================ */
+
+.globe-section {
+  padding-block: var(--gap-2xl);
+  position: relative;
+}
+
+#globe-container {
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  cursor: pointer;
+  position: relative;
+}
+
+#globe-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+}
+
+.globe-glow {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle, color-mix(in oklch, var(--accent) 8%, transparent), transparent 60%);
+  pointer-events: none;
+}
+
+/* ============================================
+   Space Planet
+   ============================================ */
+
+#space-planet {
+  width: 300px;
+  height: 300px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.planet-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.planet-body {
+  position: absolute;
+  inset: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset -20px -20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.planet-surface {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, #1e3a5f, #0b1930),
+    linear-gradient(135deg, #0d2847, #1a4070);
+  animation: planetRotate 30s linear infinite;
+}
+
+.planet-clouds {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+.planet-clouds.cloud-1 {
+  background: 
+    radial-gradient(ellipse 30% 20% at 40% 30%, rgba(96, 165, 250, 0.4), transparent),
+    radial-gradient(ellipse 25% 15% at 70% 60%, rgba(96, 165, 250, 0.3), transparent);
+  animation: cloudRotate1 20s linear infinite;
+}
+
+.planet-clouds.cloud-2 {
+  background: 
+    radial-gradient(ellipse 20% 25% at 55% 45%, rgba(150, 200, 255, 0.25), transparent),
+    radial-gradient(ellipse 35% 10% at 25% 70%, rgba(100, 180, 250, 0.2), transparent);
+  animation: cloudRotate2 25s linear infinite reverse;
+}
+
+.planet-shade {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 35%, transparent 30%, rgba(0, 0, 0, 0.7) 70%);
+}
+
+.planet-highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.15), transparent 50%);
+}
+
+.planet-glow {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in oklch, var(--accent) 12%, transparent), transparent 60%);
+  animation: planetPulse 4s ease-in-out infinite alternate;
+}
+
+.planet-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 240px;
+  height: 240px;
+  transform: translate(-50%, -50%) rotateX(75deg);
+  border: 1px solid color-mix(in oklch, var(--accent) 25%, transparent);
+  border-radius: 50%;
+  animation: ringRotate 15s linear infinite;
+}
+
+/* Orbiting dots */
+.orbit-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.orbit-dot.od-1 {
+  animation: orbit1 8s linear infinite;
+}
+.orbit-dot.od-2 {
+  animation: orbit2 12s linear infinite;
+}
+.orbit-dot.od-3 {
+  animation: orbit3 6s linear infinite reverse;
+}
+
+@keyframes planetRotate {
+  from { background-position: 0 0; }
+  to { background-position: 200% 0; }
+}
+
+@keyframes cloudRotate1 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cloudRotate2 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes planetPulse {
+  from { opacity: 0.6; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes ringRotate {
+  from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); }
+  to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); }
+}
+
+@keyframes orbit1 {
+  from { 
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg) translateX(130px) rotate(0deg);
+  }
+  to { 
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(360deg) translateX(130px) rotate(-360deg);
+  }
+}
+
+@keyframes orbit2 {
+  from { 
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(120deg) rotate(0deg) translateX(150px) rotate(0deg);
+  }
+  to { 
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(120deg) rotate(360deg) translateX(150px) rotate(-360deg);
+  }
+}
+
+@keyframes orbit3 {
+  from { 
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(240deg) rotate(0deg) translateX(110px) rotate(0deg);
+  }
+  to { 
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(240deg) rotate(360deg) translateX(110px) rotate(-360deg);
+  }
+}
+
+/* ============================================
+   Depth Stack / Showcase
+   ============================================ */
+
+.showcase-section {
+  padding-block: var(--gap-2xl);
+  overflow: hidden;
+}
+
+#depth-stack {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  height: 420px;
+  margin: var(--gap-xl) auto 0;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.depth-card {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap-lg);
+  transition: filter 0.3s ease;
+}
+
+.depth-card-inner {
+  text-align: center;
+}
+
+.depth-card-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--gap-md);
+  color: var(--accent);
+}
+
+.depth-card h4 {
+  font-size: var(--fs-h3);
+  margin-bottom: var(--gap-xs);
+}
+
+.depth-card p {
+  color: var(--fg-2);
+  font-size: var(--fs-body);
+}
+
+/* ============================================
+   Cursor Reveal Section
+   ============================================ */
+
+#cursor-reveal {
+  position: relative;
+  padding-block: var(--gap-2xl);
+  min-height: 500px;
+  overflow: hidden;
+  cursor: none;
+}
+
+.reveal-base {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  color: var(--muted);
+  opacity: 0.3;
+  user-select: none;
+}
+
+.reveal-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  clip-path: circle(0px at 50% 50%);
+  user-select: none;
+}
+
+.reveal-mask {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in oklch, var(--accent) 40%, transparent);
+  pointer-events: none;
+  box-shadow:
+    0 0 30px color-mix(in oklch, var(--accent) 15%, transparent),
+    inset 0 0 30px color-mix(in oklch, var(--accent) 10%, transparent);
+}
+
+.reveal-hint {
+  position: absolute;
+  bottom: var(--gap-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--fs-meta);
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+/* ============================================
+   Globe Stats
+   ============================================ */
+
+.globe-stats {
+  display: flex;
+  gap: var(--gap-lg);
+  margin-top: var(--gap-md);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+.stat-label {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  #space-planet {
+    width: 220px;
+    height: 220px;
+  }
+
+  .planet-ring {
+    width: 180px;
+    height: 180px;
+  }
+
+  #depth-stack {
+    height: 320px;
+  }
+
+  #cursor-reveal {
+    min-height: 350px;
+  }
+
+  #globe-container {
+    max-width: 320px;
+  }
+
+  .globe-stats {
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+  }
+
+  #cursor-reveal .reveal-base,
+  #cursor-reveal .reveal-layer {
+    font-size: clamp(32px, 10vw, 56px);
+  }
+}

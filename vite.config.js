@@ -16,6 +16,7 @@ export default defineConfig({
     },
     minify: 'terser',
     cssMinify: true,
+    chunkSizeWarningLimit: 600,
   },
   plugins: [
     createHtmlPlugin({

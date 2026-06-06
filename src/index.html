@@ -16,13 +16,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <!-- Starfield Background Canvas -->
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <!-- Scroll Stars Parallax Layer -->
+  <div id="scroll-stars" aria-hidden="true"></div>
+
   <!-- Mobile Navigation Overlay -->
   <div class="mobile-nav" id="mobileNav">
     <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <a href="#features" class="mobile-nav-link">Features</a>
+    <a href="#universe" class="mobile-nav-link">Universe</a>
     <a href="#workflow" class="mobile-nav-link">Workflow</a>
+    <a href="#showcase" class="mobile-nav-link">Showcase</a>
     <a href="#start" class="mobile-nav-link">Get Started</a>
     <a href="login.html" class="btn btn-primary">Sign In</a>
   </div>
@@ -33,7 +41,9 @@
       <a href="index.html" class="logo">nicart<span>.</span>space</a>
       <nav>
         <a href="#features">Features</a>
+        <a href="#universe">Universe</a>
         <a href="#workflow">Workflow</a>
+        <a href="#showcase">Showcase</a>
         <a href="#start">Get Started</a>
       </nav>
       <div class="row" style="gap: 12px;">
@@ -100,6 +110,60 @@
       </div>
     </section>
 
+    <!-- Universe / Globe Section -->
+    <section class="section globe-section" id="universe">
+      <div class="container">
+        <div class="grid-2-1">
+          <div class="stack" style="gap: 24px;" data-animate="fade-left">
+            <p class="eyebrow">GLOBAL INFRASTRUCTURE</p>
+            <h2 class="section-heading">Deploy to the edge. Everywhere.</h2>
+            <p class="lead" style="max-width: 100%;">Your projects run on a global network spanning 200+ regions. Instant response times, no matter where your users are.</p>
+            <div class="globe-stats">
+              <div class="stat-item">
+                <span class="stat-number">200+</span>
+                <span class="stat-label">Edge Regions</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">&lt;50ms</span>
+                <span class="stat-label">Avg. Latency</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">99.99%</span>
+                <span class="stat-label">Uptime SLA</span>
+              </div>
+            </div>
+          </div>
+          <div style="position: relative;">
+            <div class="globe-glow"></div>
+            <div id="globe-container"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Space Planet / Creative Universe -->
+    <section class="section" id="creative">
+      <div class="container">
+        <div class="grid-2-1" style="align-items: center;">
+          <div id="space-planet" data-animate="scale-in"></div>
+          <div class="stack" style="gap: 24px;" data-animate="fade-right">
+            <p class="eyebrow">YOUR CREATIVE UNIVERSE</p>
+            <h2 class="section-heading">A world built for makers.</h2>
+            <p class="lead" style="max-width: 100%;">Every project is a new planet in your creative universe. Explore, experiment, and launch — all from your orbital command center.</p>
+            <a href="login.html" class="btn btn-ghost btn-arrow btn-magnetic">Start exploring</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cursor Reveal / Interactive Discovery -->
+    <section class="section" id="cursor-reveal">
+      <div class="reveal-base">DISCOVER</div>
+      <div class="reveal-layer">DISCOVER</div>
+      <div class="reveal-mask"></div>
+      <div class="reveal-hint">Move your cursor to reveal</div>
+    </section>
+
     <!-- Workflow / Terminal -->
     <section class="section" id="workflow">
       <div class="container grid-2-1">
@@ -124,6 +188,53 @@
           <h2 class="section-heading">Deploy in seconds, not hours.</h2>
           <p class="lead" style="max-width: 100%;">Write code, run one command, and watch your project go live across the globe. No config files. No build pipelines to debug.</p>
           <a href="login.html" class="btn btn-ghost btn-arrow btn-magnetic">Try it yourself</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Showcase / Depth Stack -->
+    <section class="section showcase-section" id="showcase">
+      <div class="container" style="text-align: center;">
+        <div data-animate="fade-up">
+          <p class="eyebrow">SHOWCASE</p>
+          <h2 class="section-heading">Projects built with nicart.space</h2>
+        </div>
+        <div id="depth-stack">
+          <div class="depth-card">
+            <div class="depth-card-inner">
+              <svg class="depth-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              <h4>SaaS Dashboard</h4>
+              <p>Real-time analytics with edge-cached data pipelines</p>
+            </div>
+          </div>
+          <div class="depth-card">
+            <div class="depth-card-inner">
+              <svg class="depth-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+              <h4>Social Platform</h4>
+              <p>Millions of concurrent users with sub-50ms latency</p>
+            </div>
+          </div>
+          <div class="depth-card">
+            <div class="depth-card-inner">
+              <svg class="depth-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              <h4>Creative Portfolio</h4>
+              <p>GPU-accelerated animations and WebGL experiences</p>
+            </div>
+          </div>
+          <div class="depth-card">
+            <div class="depth-card-inner">
+              <svg class="depth-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <h4>Health Tech</h4>
+              <p>HIPAA-compliant infrastructure with zero cold starts</p>
+            </div>
+          </div>
+          <div class="depth-card">
+            <div class="depth-card-inner">
+              <svg class="depth-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <h4>FinTech API</h4>
+              <p>End-to-end encryption with global compliance</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
