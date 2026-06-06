@@ -1,10 +1,7 @@
 /**
  * Starfield / Warp Speed Background
- * Inspired by codepen.io/nodws/pen/pejBNb
  * Full-page canvas starfield with warp acceleration on scroll
  */
-
-import gsap from 'gsap';
 
 export function initStarfield() {
   const canvas = document.getElementById('starfield');
@@ -12,8 +9,7 @@ export function initStarfield() {
 
   const ctx = canvas.getContext('2d');
   let width, height;
-  let animId;
-  let warpFactor = 0; // 0 = normal drift, 1 = full warp
+  let warpFactor = 0;
 
   const STAR_COUNT = 600;
   const MAX_DEPTH = 1500;
@@ -42,7 +38,6 @@ export function initStarfield() {
   }
 
   function draw() {
-    // Slight trail effect for streaking
     ctx.fillStyle = `rgba(11, 16, 32, ${0.3 + (1 - warpFactor) * 0.6})`;
     ctx.fillRect(0, 0, width, height);
 
@@ -52,11 +47,8 @@ export function initStarfield() {
 
     for (let i = 0; i < STAR_COUNT; i++) {
       const star = stars[i];
-
-      // Move star toward camera
       star.z -= speed;
 
-      // Reset if behind camera
       if (star.z <= 0) {
         star.x = (Math.random() - 0.5) * width * 3;
         star.y = (Math.random() - 0.5) * height * 3;
@@ -66,26 +58,22 @@ export function initStarfield() {
         continue;
       }
 
-      // Project to 2D
       const x = cx + (star.x / star.z) * 300;
       const y = cy + (star.y / star.z) * 300;
-
-      // Size based on depth
       const size = (1 - star.z / MAX_DEPTH) * 2.5;
       const alpha = (1 - star.z / MAX_DEPTH) * 0.9;
 
-      // Draw streak line when warping
+      // Streak line when warping
       if (warpFactor > 0.1) {
-        const streakLength = warpFactor;
         ctx.beginPath();
         ctx.moveTo(star.prevX || x, star.prevY || y);
         ctx.lineTo(x, y);
-        ctx.strokeStyle = `rgba(150, 180, 255, ${alpha * streakLength})`;
+        ctx.strokeStyle = `rgba(150, 180, 255, ${alpha * warpFactor})`;
         ctx.lineWidth = size * 0.8;
         ctx.stroke();
       }
 
-      // Draw star point
+      // Star dot
       ctx.beginPath();
       ctx.arc(x, y, size, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(200, 220, 255, ${alpha})`;
@@ -95,40 +83,20 @@ export function initStarfield() {
       star.prevY = y;
     }
 
-    animId = requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
   }
 
-  // Setup
+  // Warp on scroll
+  function updateWarp() {
+    const scrollMax = document.documentElement.scrollHeight - window.innerHeight;
+    const target = Math.min((window.scrollY || 0) / (scrollMax * 0.3), 1);
+    warpFactor += (target - warpFactor) * 0.05;
+  }
+
   resize();
   initStars();
   draw();
 
-  window.addEventListener('resize', () => {
-    resize();
-    initStars();
-  });
-
-  // Warp on scroll — accelerate when user scrolls down
-  const scrollThreshold = document.documentElement.scrollHeight - window.innerHeight;
-
-  function updateWarp() {
-    const scrollY = window.scrollY || window.pageYOffset;
-    const ratio = Math.min(scrollY / (scrollThreshold * 0.3), 1);
-    gsap.to({ val: warpFactor }, {
-      val: ratio,
-      duration: 0.4,
-      ease: 'power2.out',
-      onUpdate: function () {
-        warpFactor = this.targets()[0].val;
-      },
-    });
-  }
-
+  window.addEventListener('resize', () => { resize(); initStars(); });
   window.addEventListener('scroll', updateWarp, { passive: true });
-
-  return () => {
-    cancelAnimationFrame(animId);
-    window.removeEventListener('resize', resize);
-    window.removeEventListener('scroll', updateWarp);
-  };
 }

@@ -7,92 +7,48 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function initScrollAnimations(lenis) {
-  // Generic fade-up animations
-  const fadeUpElements = document.querySelectorAll('[data-animate="fade-up"]');
-  fadeUpElements.forEach((el) => {
-    gsap.to(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      ease: 'power3.out',
-    });
-  });
+const ANIMATE_CONFIGS = {
+  'fade-up': { y: 0, opacity: 1 },
+  'fade-left': { x: 0, opacity: 1 },
+  'fade-right': { x: 0, opacity: 1 },
+  'scale-in': { scale: 1, opacity: 1 },
+};
 
-  // Fade left
-  const fadeLeftElements = document.querySelectorAll('[data-animate="fade-left"]');
-  fadeLeftElements.forEach((el) => {
-    gsap.to(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-      x: 0,
-      opacity: 1,
-      duration: 1,
-      ease: 'power3.out',
-    });
-  });
-
-  // Fade right
-  const fadeRightElements = document.querySelectorAll('[data-animate="fade-right"]');
-  fadeRightElements.forEach((el) => {
-    gsap.to(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-      x: 0,
-      opacity: 1,
-      duration: 1,
-      ease: 'power3.out',
-    });
-  });
-
-  // Scale in
-  const scaleElements = document.querySelectorAll('[data-animate="scale-in"]');
-  scaleElements.forEach((el) => {
-    gsap.to(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-      scale: 1,
-      opacity: 1,
-      duration: 1.2,
-      ease: 'power3.out',
+export function initScrollAnimations() {
+  // Generic data-animate elements
+  Object.entries(ANIMATE_CONFIGS).forEach(([type, props]) => {
+    document.querySelectorAll(`[data-animate="${type}"]`).forEach((el) => {
+      gsap.to(el, {
+        ...props,
+        duration: type === 'scale-in' ? 1.2 : 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+      });
     });
   });
 
   // Stagger children
-  const staggerContainers = document.querySelectorAll('[data-animate="stagger"]');
-  staggerContainers.forEach((container) => {
-    const children = container.children;
-    gsap.to(children, {
-      scrollTrigger: {
-        trigger: container,
-        start: 'top 80%',
-        toggleActions: 'play none none none',
-      },
+  document.querySelectorAll('[data-animate="stagger"]').forEach((container) => {
+    gsap.to(container.children, {
       y: 0,
       opacity: 1,
       duration: 0.8,
       ease: 'power3.out',
       stagger: 0.15,
+      scrollTrigger: {
+        trigger: container,
+        start: 'top 80%',
+        toggleActions: 'play none none none',
+      },
     });
   });
 
-  // Section headings — clip/reveal
-  const sectionHeadings = document.querySelectorAll('.section-heading');
-  sectionHeadings.forEach((heading) => {
+  // Section headings — clip reveal
+  document.querySelectorAll('.section-heading').forEach((heading) => {
     gsap.fromTo(heading,
       { clipPath: 'inset(0 100% 0 0)' },
       {
@@ -109,8 +65,7 @@ export function initScrollAnimations(lenis) {
   });
 
   // Parallax elements
-  const parallaxElements = document.querySelectorAll('[data-parallax]');
-  parallaxElements.forEach((el) => {
+  document.querySelectorAll('[data-parallax]').forEach((el) => {
     const speed = parseFloat(el.dataset.parallax) || 0.2;
     gsap.to(el, {
       yPercent: speed * 100,

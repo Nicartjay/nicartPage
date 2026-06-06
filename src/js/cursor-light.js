@@ -5,30 +5,20 @@
 import gsap from 'gsap';
 
 export function initCursorLight() {
-  // Only on desktop (no touch)
   if (window.matchMedia('(pointer: coarse)').matches) return;
 
   const light = document.createElement('div');
   light.classList.add('cursor-light');
   document.body.appendChild(light);
 
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
+  const xSet = gsap.quickSetter(light, 'x', 'px');
+  const ySet = gsap.quickSetter(light, 'y', 'px');
 
   document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+    xSet(e.clientX);
+    ySet(e.clientY);
   });
 
-  // Smooth follow with GSAP ticker
-  gsap.ticker.add(() => {
-    gsap.set(light, {
-      x: mouseX,
-      y: mouseY,
-    });
-  });
-
-  // Hide when mouse leaves window
   document.addEventListener('mouseleave', () => {
     gsap.to(light, { opacity: 0, duration: 0.3 });
   });

@@ -1,20 +1,17 @@
 /**
  * Animated Space Planet / Orb
- * Inspired by codepen.io/iamglynnsmith/pen/aNGVYa
  * CSS-driven rotating planet with cloud layers and glow
  */
 
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { getCenteredMousePos } from './utils';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function initSpacePlanet() {
   const planet = document.getElementById('space-planet');
   if (!planet) return;
-
-  // Create planet elements dynamically
-  const orbSize = 280;
 
   planet.innerHTML = `
     <div class="planet-wrapper">
@@ -33,14 +30,10 @@ export function initSpacePlanet() {
     </div>
   `;
 
-  // Parallax on mouse
   const wrapper = planet.querySelector('.planet-wrapper');
-  let rect = planet.getBoundingClientRect();
 
   planet.addEventListener('mousemove', (e) => {
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-
+    const { x, y } = getCenteredMousePos(e, planet);
     gsap.to(wrapper, {
       rotateY: x * 20,
       rotateX: -y * 20,
@@ -58,20 +51,11 @@ export function initSpacePlanet() {
     });
   });
 
-  // Scroll entrance
   gsap.from(wrapper, {
     scale: 0.5,
     opacity: 0,
     duration: 1.5,
     ease: 'power3.out',
-    scrollTrigger: {
-      trigger: planet,
-      start: 'top 80%',
-    },
-  });
-
-  // Resize handler
-  window.addEventListener('resize', () => {
-    rect = planet.getBoundingClientRect();
+    scrollTrigger: { trigger: planet, start: 'top 80%' },
   });
 }
