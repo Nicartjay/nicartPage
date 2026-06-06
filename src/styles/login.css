@@ -445,9 +445,9 @@
 .login-globe {
   position: absolute;
   top: 0;
-  /* Push the container so the globe center is at the right edge of the panel */
-  /* This way only the left half of the globe (right half to viewer) is visible */
-  right: -50%;
+  /* Push container so globe center is at the left edge of the panel */
+  /* Only the right half of the globe is visible */
+  left: -50%;
   width: 100%;
   height: 100%;
   z-index: 1;
@@ -455,13 +455,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .login-globe canvas {
   display: block;
-  /* Canvas is square (set by JS), don't stretch it */
+  /* Canvas is square (set by JS), scaled up to zoom in */
   width: auto !important;
-  height: 100% !important;
+  height: 140% !important;
 }
 
 @media (max-width: 860px) {
