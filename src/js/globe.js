@@ -31,7 +31,7 @@ export function initGlobe() {
   // Position from upper-right-behind so the terminator (day/night line)
   // cuts through the visible portion ~50/50
   const sunLight = new THREE.DirectionalLight(0xffeedd, 2.2);
-  sunLight.position.set(3, 1, 1);
+  sunLight.position.set(3, 1, -0.5);
   scene.add(sunLight);
 
   // Extremely dim ambient — dark side should be nearly black
