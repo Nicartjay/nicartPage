@@ -4,10 +4,10 @@
 
 :root {
   /* Colors */
-  --bg: #050a14;
-  --surface: #0a1020;
-  --surface-warm: #0e1730;
-  --surface-elevated: #111b32;
+  --bg: #0b1020;
+  --surface: #131b2f;
+  --surface-warm: #182343;
+  --surface-elevated: #1a2340;
   --fg: #f8fafc;
   --fg-2: #cbd5e1;
   --muted: #8ea0b8;

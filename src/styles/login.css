@@ -28,9 +28,10 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 80%, color-mix(in oklch, var(--accent) 20%, transparent), transparent),
-    radial-gradient(ellipse 60% 80% at 80% 20%, color-mix(in oklch, var(--accent) 15%, transparent), transparent),
-    radial-gradient(ellipse 50% 50% at 50% 50%, color-mix(in oklch, var(--accent) 8%, transparent), transparent);
+    radial-gradient(ellipse 80% 60% at 20% 80%, color-mix(in oklch, var(--accent) 8%, transparent), transparent),
+    radial-gradient(ellipse 60% 80% at 80% 20%, color-mix(in oklch, var(--accent) 6%, transparent), transparent),
+    radial-gradient(ellipse 50% 50% at 50% 50%, color-mix(in oklch, var(--accent) 3%, transparent), transparent);
+  background-color: #030710;
   will-change: transform;
 }
 
